@@ -6,10 +6,9 @@ typedef struct Tree{
 	struct Tree* leftchild;
 	struct Tree* rightchild;
 }*Treenode,Treeinode;
-char Pre[100];
-int countone = 0;
-int countzero = 0;
-int counttwo = 0;
+void Print(Treenode node){
+	printf("%c",node->date);
+}
 Treenode creat(){
 	Treenode Tree ;
 	char a = getchar();
@@ -23,38 +22,38 @@ Treenode creat(){
 	}
 	return Tree;
 }
-void FindOne(Treenode root){
+void FirstFind(Treenode root){
 	if (root){
-		if((root->leftchild == NULL && root->rightchild != NULL) || (root->leftchild!=NULL && root->rightchild==NULL)){
-		countone++;
-		} 
-		FindOne(root->leftchild);
-		FindOne(root->rightchild);
+		Print(root);
+		
+		FirstFind(root->leftchild);
+		
+		FirstFind(root->rightchild);
 	}
 }
-void FindZero(Treenode root){
-	if(root){
-	if (root->leftchild == NULL && root->rightchild == NULL){	
-	   	Pre[countzero++]=root->date;
-	    }
-		FindZero(root->leftchild);
-		FindZero(root->rightchild);
-    }
+void MiddleFind(Treenode root){
+	if (root){	
+	    MiddleFind(root->leftchild);
+		
+		Print(root);
+	
+		MiddleFind(root->rightchild);
+	}
 }
-void FindTwo(Treenode root){
-	if(root){
-		if (root->leftchild != NULL && root->rightchild != NULL){
-		counttwo++;
-	    }
-		FindTwo(root->leftchild);
-		FindTwo(root->rightchild);
+void EndFind(Treenode root){
+	if (root){
+		EndFind(root->leftchild);
+		
+		EndFind(root->rightchild);
+		
+		Print(root);
 	}
 }
 int main(void){
 	Treenode root = creat();
-	FindZero(root);
-	FindOne(root);
-	FindTwo(root);
-	printf("%d %d %d\n",countzero,countone,counttwo);
-	puts(Pre);
+	FirstFind(root);
+	printf("\n");
+	MiddleFind(root);
+	printf("\n");
+	EndFind(root);
 }
