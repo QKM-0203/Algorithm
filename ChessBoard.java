@@ -21,7 +21,6 @@ public class ChessBoard {
         static int[][] chessboard = new int[N][N]; // 棋盘
 
         /**
-         *
          * 
          *  x,y为棋子的位置
          *  如果棋子的位置不合法，则返回一个大于8的数。
