@@ -22,9 +22,9 @@ public class ChessBoard {
 
         /**
          *
-         * @param nami
-         * @param x,y为棋子的位置
-         * @return 如果棋子的位置不合法，则返回一个大于8的数。
+         * 
+         *  x,y为棋子的位置
+         *  如果棋子的位置不合法，则返回一个大于8的数。
          * 否则返回棋子的下个出路的个数
          */
         static int wayOut(int x, int y){
@@ -46,7 +46,7 @@ public class ChessBoard {
 
         /**
          * 按照棋子的下个出路的个数从低到高排序
-         * @param next 棋子的八个位置的数组
+         *棋子的八个位置的数组
          */
         static void sort(Direction[] next){
             int i, j, index;
