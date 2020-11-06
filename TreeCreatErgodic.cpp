@@ -1,3 +1,10 @@
+/*
+输入ABC##DE#G##F### 
+输出：
+ABCDEGF
+CBEGDFA
+CGEFDBA
+*/
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
