@@ -1,4 +1,3 @@
-
 import java.util.*;
 class LinkNode{
     char date;
@@ -11,7 +10,8 @@ class LinkNode{
 public class Tree {
     private static String string ;
     private static int i = 0;
-    private static LinkNode CreatTree(){
+  //先序创建树   
+ private static LinkNode CreatTree(){
         LinkNode root;
         char ch = string.charAt(i++);
         if (ch == '#'){
@@ -23,17 +23,9 @@ public class Tree {
         }
         return root;
     }
-    /*public static void FirstShow(LinkNode root){
-        if (root != null){
-            FirstShow(root.lChild);
-
-            FirstShow(root.rChild);
-
-            System.out.print(root.date);
-        }
-    }*/
+    //后序输出
     private static void EndShow(Stack<LinkNode> StackLinkNode,LinkNode root){
-        LinkNode pre = null;
+           LinkNode pre = null;
         while(root !=null || !StackLinkNode.empty()){
             if (root != null){
                 StackLinkNode.push(root);
@@ -52,6 +44,7 @@ public class Tree {
         }
 
     }
+     //先序输出
     private static void FirstShow(Stack<LinkNode> StackLinkNode,LinkNode root){
         while(root !=null || !StackLinkNode.empty()){
             if (root != null){
@@ -64,6 +57,7 @@ public class Tree {
             }
         }
     }
+    //层次遍历
     private static void ArrangementShow(ArrayDeque<LinkNode> DequeLinkNode,LinkNode root){
         DequeLinkNode.add(root);
         while(!DequeLinkNode.isEmpty()){
@@ -78,6 +72,7 @@ public class Tree {
         }
 
     }
+     //中序遍历
         private static void MiddleShow(Stack<LinkNode> StackLinkNode,LinkNode root){
         while(root !=null || !StackLinkNode.empty()){
             if (root != null){
@@ -105,11 +100,11 @@ public class Tree {
         ArrangementShow(linkNodes, linkNode);
     }
     /*
-    ABC##DE#G##F###
+    输入:ABC##DE#G##F###
 
-    ABCDEGF
-    CBEGDFA
-    CGEFDBA
-
+   先序: ABCDEGF
+   中序: CBEGDFA
+   后序: CGEFDBA
+   层次输出: ABCDEFG
      */
 }
