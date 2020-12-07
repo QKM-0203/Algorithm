@@ -11,7 +11,7 @@ class TreeNode{
 }
 public class SortTree {
     private static TreeNode root = null;
-
+    //首先查找删除的结点是否存在
     private static void deleteBST(TreeNode root, int numDelete) {
         if (root == null) {
             System.out.println("没有该结点，删除失败!");
@@ -24,14 +24,16 @@ public class SortTree {
             deleteTree(root, numDelete);
         }
     }
-
+     //若存在则删除该结点
     private static void deleteTree(TreeNode root, int numDelete) {
+    //为叶子结点直接删除
         if (root.leftTree == null && root.rightTree == null) {
             if(root.parentTree.rightTree == root){
                 root.parentTree.rightTree = null;
             } else{
                 root.parentTree.leftTree = null;
             }
+            //有左右子树则找到右子树中最小的，或者左子树中最大的，我找的是右子树最小的
         } else if (root.rightTree != null && root.leftTree != null) {
             TreeNode preRootR = root.rightTree;
             while (preRootR.leftTree != null) {
@@ -41,15 +43,19 @@ public class SortTree {
             root.date = preRootR.date;
             preRootR.date = t;
             deleteTree(preRootR,numDelete);
+            //有一个子树不为空
         } else {
+            //右子树不为空
             if (root.leftTree == null) {
+            //判断该节点是右子树吗，因为要改双亲节点的孩子域
                 if(root.parentTree.rightTree == root){
                     root.parentTree.rightTree = root.rightTree;
                 }else{
                     root.parentTree.leftTree = root.rightTree;
                 }
-
-            } else {
+            //左子树不为空
+             }else {
+             //判断是不是左子树
                 if(root.parentTree.leftTree == root){
                     root.parentTree.leftTree = root.leftTree;
                 }else{
@@ -58,10 +64,11 @@ public class SortTree {
 
 
             }
+            
             root = null;
         }
     }
-
+     //创建二叉排序树，同时也是插入操作
     private static TreeNode insertTree(TreeNode root,int date){
         if(root == null){
             root = new TreeNode(date);
@@ -78,6 +85,7 @@ public class SortTree {
         }
         return root;
     }
+    //中序遍历，有序的
     private static void Middle(TreeNode root){
 
         if(root != null){
