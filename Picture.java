@@ -2,6 +2,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Set;
+//邻边结点
 class PointNode{
     int index;
     PointNode next;
@@ -10,7 +11,7 @@ class PointNode{
         next = null;
     }
 }
-
+//顶点数组
 class ArrayPoint{
     char point;
     PointNode next;
@@ -19,6 +20,7 @@ class ArrayPoint{
         next = null;
     }
 }
+//顶点度数
 class Degree{
     public int inDegree;
     public int outDegree;
