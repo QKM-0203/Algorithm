@@ -8,7 +8,7 @@ public class isAVLTree{
         return height(root) == -1?false:true;
     }
     public int height(TreeNode root){
-        //叶子节点高度为0;
+        //叶子节点高度为0时;
         if(root == null){
             return 0;
         }else{
