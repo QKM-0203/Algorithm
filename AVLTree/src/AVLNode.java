@@ -1,4 +1,4 @@
-package cn.AVL;
+package AVLTree.src;
 
 /**
  * AVL结点类

@@ -1,4 +1,4 @@
-package cn.AVL;
+package AVLTree.src;
 
 
 
@@ -186,7 +186,7 @@ public class AVLTree<AnyType  extends Comparable<? super AnyType>>{
       } else if(key.compareTo(avlNode.element) < 0){
          avlNode.right = isFind(avlNode.left,key);
       } else if (key == avlNode.element){
-         deleteNode(this.root,key);
+        avlNode =  deleteNode(this.root,key);
       }
       return avlNode;
    }
@@ -260,25 +260,20 @@ public class AVLTree<AnyType  extends Comparable<? super AnyType>>{
    private  void Middle(AVLNode<AnyType> root){
 
       if(root != null){
-         System.out.print(root.element+ " ");
+
          Middle(root.left);
+         AnyType element = root.element;
+         Student s =(Student)element;
+         System.out.println(s.age);
          Middle(root.right);
       }
    }
    public static void main(String[] args) {
-      AVLTree<Integer> integerAVLTree = new AVLTree<>();
-      integerAVLTree.insert(1);
-      integerAVLTree.insert(2);
-      integerAVLTree.insert(3);
-      integerAVLTree.insert(4);
-      integerAVLTree.insert(5);
-      integerAVLTree.insert(6);
-      integerAVLTree.insert(7);
-      integerAVLTree.insert(8);
-      integerAVLTree.Middle(integerAVLTree.root);//4 2 1 3 6 5 7 8
-      integerAVLTree.delete(4);
-      System.out.println();
-      integerAVLTree.Middle(integerAVLTree.root); //5 2 1 3 7 6 8
+      AVLTree<Student> integerAVLTree = new AVLTree<>();
+      integerAVLTree.insert(new Student(79,"qkm"));
+      integerAVLTree.insert(new Student(8,"qkm"));
+      integerAVLTree.insert(new Student(54,"qkm"));
+      integerAVLTree.Middle(integerAVLTree.root);
 
    }
 }

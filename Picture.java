@@ -32,7 +32,7 @@ class Degree{
         this.ch = ch;
     }
 }
-public class Main {
+public class Picture {
     //计算出度
     public static void findOutDegree(){
         for(int i = 0; i < 27; i++){
