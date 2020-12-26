@@ -13,8 +13,10 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
      */
     public void insert(AnyType key){
         RBNode<AnyType> parent = null;
+          //新增的节点都为红色
         RBNode<AnyType> node = new RBNode<AnyType>(RED,key);
         RBNode<AnyType> root = this.root;
+          //找到待插入的位置的母亲
         while(root != null){
               parent = root;
               int cmp = root.key.compareTo(key);
@@ -22,24 +24,25 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
                   root = root.leftChild;
               }else if(cmp < 0){
                   root = root.rightChild;
-              }else{
+              }else{//若key相同，更新key值
                   root.key = key;
-                  return;
               }
         }
+          //设置母亲
         node.parent = parent;
+          //如果母亲不为空，则设置在母亲的位置
         if(parent != null){
             if(key.compareTo(parent.key) > 0){
                 parent.rightChild = node;
             } else{
                 parent.leftChild = node;
             }
-        } else{
+        } else{//母亲为空，第一个节点，更新根节点，更新颜色
             this.root = node;
-            this.root.setColor(BLACK);
+            node.setColor(BLACK);
         }
+         //判断满足红黑树的性质
         isBalanced(node);
-        return;
     }
 
     /**
@@ -59,28 +62,19 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
         if(rChild.leftChild != null) {
             rChild.leftChild.parent = rbNode;
         }
-        if(rbNode.parent != null) {
-            rChild.parent = rbNode.parent;
-            if(rbNode == rbNode.parent.leftChild) {
-                rbNode.parent.leftChild = rChild;
-            } else {
-                rbNode.parent.rightChild = rChild;
-            }
-        }else {
-            this.root = rChild;
-            //新更节点的母亲设置为空
-            this.root.parent = null;
-        }
+          //更新孩子和母亲
+        setChildAndParent(rbNode,rChild);
         //最后在更新旋转节点的母亲，将旋转节点放在新的节点的左边
         rbNode.parent = rChild;
         rChild.leftChild = rbNode;
     }
-    public void rightRotation(RBNode<AnyType> rbNode){
-        RBNode<AnyType> rp = rbNode.leftChild;
-        rbNode.leftChild = rp.rightChild;
-        if(rp.rightChild != null) {
-           rp.rightChild.parent = rbNode;
-        }
+
+    /**
+     * 当母亲不为空时，更新母亲和孩子,更新根结点颜色
+     * @param rbNode
+     * @param rp
+     */
+    public void setChildAndParent(RBNode<AnyType> rbNode,RBNode<AnyType> rp){
         if(rbNode.parent != null) {
             rp.parent = rbNode.parent;
             if(rbNode == rbNode.parent.leftChild) {
@@ -88,46 +82,67 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
             } else {
                 rbNode.parent.rightChild = rp;
             }
-        }else {
+        }else {//母亲为空，则将旋转之后的设为根节点
             this.root = rp;
-            this.root.parent = null;
+            rp.parent = null;
+            rp.setColor(BLACK);
         }
+    }
+
+    /**
+     * 和左旋差不多
+     * @param rbNode
+     */
+    public void rightRotation(RBNode<AnyType> rbNode){
+        RBNode<AnyType> rp = rbNode.leftChild;
+        rbNode.leftChild = rp.rightChild;
+        if(rp.rightChild != null) {
+           rp.rightChild.parent = rbNode;
+        }
+        setChildAndParent(rbNode,rp);
         rbNode.parent = rp;
         rp.rightChild = rbNode;
 
     }
+
+    /**
+     * 传入该节点，判断母亲的颜色
+     * @param rbNode
+     */
     private  void isBalanced(RBNode<AnyType> rbNode) {
          this.root.setColor(BLACK);
          RBNode<AnyType> parent = rbNode.parent;
+            //母亲不为空，同时母亲为红色
          if(parent != null && parent.getColor().equals(RED)){
+                 //获取爷爷
              RBNode<AnyType> grandfather = rbNode.parent.parent;
                //母亲是左孩子
              if(parent == grandfather.leftChild){
+                     //叔叔为空，或者黑色
                  if(grandfather.rightChild == null || grandfather.rightChild.getColor().equals(BLACK)){
+                         //传入节点为母亲的左孩子，都为坐右旋传入爷爷
                      if(rbNode == parent.leftChild){
                          grandfather.setColor(RED);
                          parent.setColor(BLACK);
                          rightRotation(grandfather);
-                     }
-                     if(parent.rightChild == rbNode){
+                     } else { //为母亲的右孩子，左旋 传入母亲
                          leftRotation(parent);
+                            //将两个红色放在一条线上继续向上在判断，将母亲看成是新插入的节点，继续判断
                          isBalanced(parent);
                      }
-                 } else {
+                 } else { //叔叔存在，同时为黑色，设置爷爷为红色，母亲和叔叔为黑色，将爷爷看成新插入的节点继续判断
                      grandfather.setColor(RED);
                      grandfather.rightChild.setColor(BLACK);
                      parent.setColor(BLACK);
                      isBalanced(grandfather);
-                     //return ;
                  }
-             } else{//母亲是右孩子
+             } else{//母亲是右孩子，道理同上，在同一条线上旋转传入爷爷
                  if(grandfather.leftChild == null || grandfather.leftChild.getColor().equals(BLACK)){
                      if(rbNode == parent.rightChild){
                          grandfather.setColor(RED);
                          parent.setColor(BLACK);
                          leftRotation(grandfather);
-                     }
-                     if(parent.leftChild == rbNode){
+                     } else{
                          rightRotation(parent);
                          isBalanced(parent);
                      }
@@ -136,11 +151,15 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
                      grandfather.leftChild.setColor(BLACK);
                      parent.setColor(BLACK);
                      isBalanced(grandfather);
-                     //return ;
                  }
              }
          }
     }
+
+    /**
+     * 中序打印
+     * @param root
+     */
     private  void Middle(RBNode<AnyType> root){
 
         if(root != null){
@@ -155,13 +174,24 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
         RBTree<Integer> integerRBTree = new RBTree<>();
         integerRBTree.insert(12);
         integerRBTree.insert(1);
-
         integerRBTree.insert(9);
-
        integerRBTree.insert(2);
        integerRBTree.insert(0);
        integerRBTree.insert(11);
        integerRBTree.insert(7);
+       integerRBTree.insert(19);
+       integerRBTree.insert(4);
+       integerRBTree.insert(15);
+       integerRBTree.insert(18);
+       integerRBTree.insert(5);
+       integerRBTree.insert(14);
+       integerRBTree.insert(13);
+       integerRBTree.insert(10);
+       integerRBTree.insert(16);
+       integerRBTree.insert(6);
+       integerRBTree.insert(3);
+       integerRBTree.insert(8);
+       integerRBTree.insert(17);
         integerRBTree.Middle(integerRBTree.root);
     }
 }
