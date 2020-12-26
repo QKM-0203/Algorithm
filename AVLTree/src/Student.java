@@ -1,5 +1,7 @@
 package AVLTree.src;
 
+import java.util.HashMap;
+
 public class Student implements Comparable<Student> {
     public int age;
     public String name = null;

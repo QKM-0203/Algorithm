@@ -1,5 +1,7 @@
 package RBTree.src;
 
+import AVLTree.src.AVLNode;
+
 public class RBTree<AnyType  extends Comparable<? super AnyType>>{
 
     private final static String BLACK = "BLACK";
@@ -7,8 +9,9 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
 
     private RBNode<AnyType> root = null;
 
+
     /**
-     *
+     *找到插入结点
      * @param key
      */
     public void insert(AnyType key){
@@ -26,6 +29,7 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
                   root = root.rightChild;
               }else{//若key相同，更新key值
                   root.key = key;
+
               }
         }
           //设置母亲
@@ -42,7 +46,7 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
             node.setColor(BLACK);
         }
          //判断满足红黑树的性质
-        isBalanced(node);
+        insertFix(node);
     }
 
     /**
@@ -109,7 +113,7 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
      * 传入该节点，判断母亲的颜色
      * @param rbNode
      */
-    private  void isBalanced(RBNode<AnyType> rbNode) {
+    private  void insertFix(RBNode<AnyType> rbNode) {
          this.root.setColor(BLACK);
          RBNode<AnyType> parent = rbNode.parent;
             //母亲不为空，同时母亲为红色
@@ -128,13 +132,13 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
                      } else { //为母亲的右孩子，左旋 传入母亲
                          leftRotation(parent);
                             //将两个红色放在一条线上继续向上在判断，将母亲看成是新插入的节点，继续判断
-                         isBalanced(parent);
+                         insertFix(parent);
                      }
                  } else { //叔叔存在，同时为黑色，设置爷爷为红色，母亲和叔叔为黑色，将爷爷看成新插入的节点继续判断
                      grandfather.setColor(RED);
                      grandfather.rightChild.setColor(BLACK);
                      parent.setColor(BLACK);
-                     isBalanced(grandfather);
+                     insertFix(grandfather);
                  }
              } else{//母亲是右孩子，道理同上，在同一条线上旋转传入爷爷
                  if(grandfather.leftChild == null || grandfather.leftChild.getColor().equals(BLACK)){
@@ -144,16 +148,109 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
                          leftRotation(grandfather);
                      } else{
                          rightRotation(parent);
-                         isBalanced(parent);
+                         insertFix(parent);
                      }
                  } else{
                      grandfather.setColor(RED);
                      grandfather.leftChild.setColor(BLACK);
                      parent.setColor(BLACK);
-                     isBalanced(grandfather);
+                     insertFix(grandfather);
                  }
              }
          }
+    }
+
+
+    /**
+     * 删除操作
+     * @param key
+     */
+    public void delete(AnyType key){
+        RBNode<AnyType> root = this.root;
+        while(root != null){
+            int cmp = key.compareTo(root.key);
+            if(cmp > 0){
+                root = root.rightChild;
+                if(root == null){
+                    System.out.println("没有该节点,删除失败");
+                    break;
+                }
+            }else if(cmp < 0){
+                root = root.leftChild;
+                if(root == null ){
+                    System.out.println("没有该节点,删除失败");
+                    break;
+                }
+
+            }else{
+                deleteFix(root);
+            }
+        }
+    }
+
+
+    public void deleteFix(RBNode<AnyType> rbNode) {
+        //待删除为叶子
+        if (rbNode.leftChild == null && rbNode.rightChild == null) {
+            //叶子为红
+            if (rbNode.getColor().equals(RED)) {
+                if (rbNode.parent != null) {//可能删除
+                    if (rbNode.parent.leftChild == rbNode) {
+                        rbNode.parent.leftChild = null;
+                    } else {
+                        rbNode.parent.rightChild = null;
+                    }
+
+                } else {
+                    this.root = null;
+                }
+            } else { //叶子为黑
+                if(rbNode.parent == null){
+                    return ;
+                }
+               String s = null;
+               if(rbNode == rbNode.parent.leftChild){
+                   s = "0";
+               } else{
+                   s = "1";
+               }
+               if(s.equals("0")){
+                   if(rbNode.rightChild.getColor().equals(RED)){
+                       rbNode.parent.setColor(RED);
+                       rbNode.parent.rightChild.setColor(BLACK);
+                       leftRotation(rbNode.parent);
+                       deleteFix(rbNode);
+                   }
+                   if(rbNode.rightChild.getColor().equals(BLACK)){
+
+                   }
+               }
+            }
+        } else if (rbNode.leftChild != null && rbNode.rightChild != null) { //待删除双儿子
+            RBNode<AnyType> replaceNode = this.findMin(rbNode.rightChild);
+            rbNode.key = replaceNode.   key;
+            deleteFix(replaceNode);
+        } else {
+             if(rbNode.leftChild != null){
+                 rbNode.key = rbNode.leftChild.key;
+                 deleteFix(rbNode.leftChild);
+             } else{
+                 rbNode.key = rbNode.rightChild.key;
+                 deleteFix(rbNode.rightChild);
+             }
+        }
+    }
+
+    /**
+     * 找最小结点
+     * @param root
+     * @return
+     */
+    private RBNode<AnyType> findMin(RBNode<AnyType> root){
+        while(root.leftChild != null) {
+            root = root.leftChild;
+        }
+        return root;
     }
 
     /**
