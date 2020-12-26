@@ -1,8 +1,5 @@
 package AVLTree.src;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 public class Student implements Comparable<Student> {
     public int age;
     public String name = null;

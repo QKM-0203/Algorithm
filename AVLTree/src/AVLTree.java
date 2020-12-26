@@ -1,7 +1,6 @@
 package AVLTree.src;
 
 
-
 public class AVLTree<AnyType  extends Comparable<? super AnyType>>{
 
    /**
@@ -272,7 +271,7 @@ public class AVLTree<AnyType  extends Comparable<? super AnyType>>{
       AVLTree<Student> integerAVLTree = new AVLTree<>();
       integerAVLTree.insert(new Student(79,"qkm"));
       integerAVLTree.insert(new Student(8,"qkm"));
-      integerAVLTree.insert(new Student(54,"qkm"));
+      integerAVLTree.insert(new Student(8,"qkm"));
       integerAVLTree.Middle(integerAVLTree.root);
 
    }
