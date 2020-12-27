@@ -214,15 +214,46 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
                } else{
                    s = "1";
                }
+                 //待删节点的兄弟为红色，母亲为黑色（一定），改兄弟为黑色，母亲为红色，继续修复传入当前结点
                if(s.equals("0")){
-                   if(rbNode.rightChild.getColor().equals(RED)){
+                   if(rbNode.parent.rightChild.getColor().equals(RED)){
                        rbNode.parent.setColor(RED);
                        rbNode.parent.rightChild.setColor(BLACK);
                        leftRotation(rbNode.parent);
                        deleteFix(rbNode);
                    }
-                   if(rbNode.rightChild.getColor().equals(BLACK)){
-
+                     //兄弟为黑色
+                   if(rbNode.parent.rightChild.getColor().equals(BLACK)) {
+                         //兄弟为黑色，母亲为红色
+                       if (rbNode.parent.getColor().equals(RED)) {
+                           leftRotation(rbNode.parent);
+                           rbNode.parent.leftChild = null;
+                       }
+                         //兄弟为黑色，母亲为黑色
+                       if (rbNode.parent.getColor().equals(BLACK)) {
+                            rbNode.parent.setColor(RED);
+                            deleteFix(rbNode);
+                       }
+                   }
+               } else{
+                   if(rbNode.parent.leftChild.getColor().equals(RED)){
+                       rbNode.parent.setColor(RED);
+                       rbNode.parent.rightChild.setColor(BLACK);
+                       leftRotation(rbNode.parent);
+                       deleteFix(rbNode);
+                   }
+                   //兄弟为黑色
+                   if(rbNode.parent.rightChild.getColor().equals(BLACK)) {
+                       //兄弟为黑色，母亲为红色
+                       if (rbNode.parent.getColor().equals(RED)) {
+                           leftRotation(rbNode.parent);
+                           rbNode.parent.leftChild = null;
+                       }
+                       //兄弟为黑色，母亲为黑色
+                       if (rbNode.parent.getColor().equals(BLACK)) {
+                           rbNode.parent.setColor(RED);
+                           deleteFix(rbNode);
+                       }
                    }
                }
             }
