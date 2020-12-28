@@ -171,19 +171,16 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
             int cmp = key.compareTo(root.key);
             if(cmp > 0){
                 root = root.rightChild;
-                if(root == null){
-                    System.out.println("没有该节点,删除失败");
-                    break;
-                }
+
             }else if(cmp < 0){
                 root = root.leftChild;
-                if(root == null ){
-                    System.out.println("没有该节点,删除失败");
-                    break;
-                }
 
             }else{
                 deleteFix(root);
+            }
+            if(root == null ) {
+                System.out.println("没有该节点,删除失败");
+                break;
             }
         }
     }
@@ -214,9 +211,8 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
                } else{
                    s = "1";
                }
-                 //待删节点的兄弟为红色，母亲为黑色（一定），改兄弟为黑色，母亲为红色，继续修复传入当前结点
-               if(s.equals("0")){
-                   if(rbNode.parent.rightChild.getColor().equals(RED)){
+               if(s.equals("0")){ //待删节点在左边
+                   if(rbNode.rightChild.getColor().equals(RED)){
                        rbNode.parent.setColor(RED);
                        rbNode.parent.rightChild.setColor(BLACK);
                        leftRotation(rbNode.parent);
@@ -235,19 +231,19 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
                             deleteFix(rbNode);
                        }
                    }
-               } else{
+               } else{ //待删结点在右边
                    if(rbNode.parent.leftChild.getColor().equals(RED)){
                        rbNode.parent.setColor(RED);
-                       rbNode.parent.rightChild.setColor(BLACK);
+                       rbNode.parent.leftChild.setColor(BLACK);
                        leftRotation(rbNode.parent);
                        deleteFix(rbNode);
                    }
                    //兄弟为黑色
-                   if(rbNode.parent.rightChild.getColor().equals(BLACK)) {
+                   if(rbNode.parent.leftChild.getColor().equals(BLACK)) {
                        //兄弟为黑色，母亲为红色
                        if (rbNode.parent.getColor().equals(RED)) {
-                           leftRotation(rbNode.parent);
-                           rbNode.parent.leftChild = null;
+                           rightRotation(rbNode.parent);
+                           rbNode.parent.rightChild = null;
                        }
                        //兄弟为黑色，母亲为黑色
                        if (rbNode.parent.getColor().equals(BLACK)) {
@@ -320,6 +316,10 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
        integerRBTree.insert(3);
        integerRBTree.insert(8);
        integerRBTree.insert(17);
+
+        integerRBTree.Middle(integerRBTree.root);
+        System.out.println();
+        integerRBTree.delete(12);
         integerRBTree.Middle(integerRBTree.root);
     }
 }
