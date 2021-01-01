@@ -299,27 +299,26 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
         integerRBTree.insert(12);
         integerRBTree.insert(1);
         integerRBTree.insert(9);
-       integerRBTree.insert(2);
-       integerRBTree.insert(0);
-       integerRBTree.insert(11);
-       integerRBTree.insert(7);
-       integerRBTree.insert(19);
-       integerRBTree.insert(4);
-       integerRBTree.insert(15);
-       integerRBTree.insert(18);
-       integerRBTree.insert(5);
-       integerRBTree.insert(14);
-       integerRBTree.insert(13);
-       integerRBTree.insert(10);
-       integerRBTree.insert(16);
-       integerRBTree.insert(6);
-       integerRBTree.insert(3);
-       integerRBTree.insert(8);
-       integerRBTree.insert(17);
-
+        integerRBTree.insert(2);
+        integerRBTree.insert(0);
+        integerRBTree.insert(11);
+        integerRBTree.insert(7);
+        integerRBTree.insert(19);
+        integerRBTree.insert(4);
+        integerRBTree.insert(15);
+        integerRBTree.insert(18);
+        integerRBTree.insert(5);
+        integerRBTree.insert(14);
+        integerRBTree.insert(13);
+        integerRBTree.insert(10);
+        integerRBTree.insert(16);
+        integerRBTree.insert(6);
+        integerRBTree.insert(3);
+        integerRBTree.insert(8);
+        integerRBTree.insert(17);
         integerRBTree.Middle(integerRBTree.root);
         System.out.println();
-        integerRBTree.delete(12);
+        integerRBTree.delete(6);
         integerRBTree.Middle(integerRBTree.root);
     }
 }
