@@ -165,21 +165,50 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
      * 删除操作
      * @param key
      */
-    public void delete(AnyType key){
+    public void delete(AnyType key) {
         RBNode<AnyType> root = this.root;
-        while(root != null){
+        while (root != null) {
             int cmp = key.compareTo(root.key);
-            if(cmp > 0){
+            if (cmp > 0) {
                 root = root.rightChild;
 
-            }else if(cmp < 0){
+            } else if (cmp < 0) {
                 root = root.leftChild;
 
-            }else{
-                deleteFix(root);
+            } else {
+                if (root.leftChild == null && root.rightChild == null) {
+                    //叶子为红
+                    if (root.getColor().equals(RED)) {
+                        if (root.parent != null) {//可能删除
+                            if (root.parent.leftChild == root) {
+                                root.parent.leftChild = null;
+                            } else {
+                                root.parent.rightChild = null;
+                            }
+
+                        } else {
+                            this.root = null;
+                        }
+                    } else {
+                        deleteFix(root, root.key);
+
+                    }
+                } else if (root.leftChild != null && root.rightChild != null) { //待删除双儿子
+                    RBNode<AnyType> replaceNode = this.findMin(root.rightChild);
+                    root.key = replaceNode.key;
+                    deleteFix(replaceNode,replaceNode.key);
+                } else {
+                    if (root.leftChild != null) {
+                        root.key = root.leftChild.key;
+                        delete((AnyType) root.leftChild);
+                    } else {
+                        root.key = root.rightChild.key;
+                        delete((AnyType) root.rightChild);
+                    }
+                }
                 return ;
             }
-            if(root == null ) {
+            if (root == null) {
                 System.out.println("没有该节点,删除失败");
                 break;
             }
@@ -187,122 +216,104 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
     }
 
 
-    public void deleteFix(RBNode<AnyType> rbNode) {
-        //待删除为叶子
-        if (rbNode.leftChild == null && rbNode.rightChild == null) {
-            //叶子为红
-            if (rbNode.getColor().equals(RED)) {
-                if (rbNode.parent != null) {//可能删除
-                    if (rbNode.parent.leftChild == rbNode) {
-                        rbNode.parent.leftChild = null;
-                    } else {
-                        rbNode.parent.rightChild = null;
-                    }
-
-                } else {
-                    this.root = null;
-                }
-            } else { //叶子为黑
-                if(rbNode.parent == null){
-                    rbNode.setColor(BLACK);
-                    return ;
-                }
-               String s = null;
-               if(rbNode == rbNode.parent.leftChild){
-                   s = "0";
-               } else{
-                   s = "1";
-               }
-               if(s.equals("0")){ //待删节点在左边
-                   RBNode<AnyType> brother = rbNode.parent.rightChild;
-                   if(brother.getColor().equals(RED)){
-                       rbNode.parent.setColor(RED);
-                       brother.setColor(BLACK);
-                       leftRotation(rbNode.parent);
-                       deleteFix(rbNode);
-                   } else { //兄弟为黑色
-                       //兄弟的两个孩子为空或者都是黑色
-                        if((brother.leftChild == null && brother.rightChild == null) || (brother.leftChild != null && brother.rightChild != null
-                       && brother.leftChild.getColor().equals(BLACK
-                        ) && brother.rightChild.getColor().equals(BLACK))){
-                             brother.setColor(RED);
-                             if(brother.parent.getColor().equals(RED)){
-                                 brother.parent.setColor(BLACK);
-                                 brother.setColor(RED);
-                                 rbNode.parent.leftChild = null;
-
-                             } else{
-                                 brother.setColor(RED);
-
-                             }
-                        } else if(brother.rightChild != null && brother.rightChild.getColor().equals(RED)){
-                            String color = brother.parent.getColor();
-                            brother.parent.setColor(BLACK);
-                            brother.setColor(color);
-                            leftRotation(brother.parent);
-                            brother.rightChild.setColor(BLACK);
-                            rbNode.parent.leftChild = null;
-                        } else if(brother.leftChild != null && brother.leftChild.getColor().equals(RED)){
-                            String color = brother.leftChild.getColor();
-                            brother.leftChild.setColor(brother.getColor());
-                            brother.setColor(color);
-                            rightRotation(brother);
-                            deleteFix(rbNode);
-                        }
-                   }
-               } else{ //待删结点在右边
-                      RBNode<AnyType> brother = rbNode.parent.leftChild;
-                         //兄弟为红色
-                      if(brother.getColor().equals(RED)){
-                          rbNode.parent.setColor(RED);
-                          brother.setColor(BLACK);
-                          rightRotation(rbNode.parent);
-                          deleteFix(rbNode);
-                      } else { //兄弟为黑色
-
-                          if ((brother.leftChild == null && brother.rightChild == null) || (brother.leftChild != null && brother.rightChild != null
-                                  && brother.leftChild.getColor().equals(BLACK
-                          ) && brother.rightChild.getColor().equals(BLACK))) {
-                              //兄弟为黑色，母亲为红色
-                              if (rbNode.parent.getColor().equals(RED)) {
-                                  rbNode.parent.setColor(BLACK);
-                                  brother.setColor(RED);
-                                  rbNode.parent.rightChild = null;
-                              } else {
-                                  brother.setColor(RED);
-                                  deleteFix(rbNode.parent);
-                              }
-                          } else if( brother.leftChild != null && brother.leftChild.getColor().equals(RED)){
-                              String color = brother.parent.getColor();
-                              brother.parent.setColor(BLACK);
-                              brother.setColor(color);
-                              rightRotation(brother.parent);
-                              brother.leftChild.setColor(BLACK);
-                              rbNode.parent.rightChild = null;
-                          } else if(brother.rightChild != null && brother.rightChild.getColor().equals(RED)){
-                              String color = brother.rightChild.getColor();
-                              brother.rightChild.setColor(brother.getColor());
-                              brother.setColor(color);
-                              leftRotation(brother);
-                              deleteFix(rbNode);
-                          }
-                      }
-               }
+        public void deleteFix (RBNode < AnyType > rbNode, AnyType Key){
+            if (rbNode.parent == null) {
+                rbNode.setColor(BLACK);
+                return;
             }
-        } else if (rbNode.leftChild != null && rbNode.rightChild != null) { //待删除双儿子
-            RBNode<AnyType> replaceNode = this.findMin(rbNode.rightChild);
-            rbNode.key = replaceNode.key;
-            deleteFix(replaceNode);
-        } else {
-             if(rbNode.leftChild != null){
-                 rbNode.key = rbNode.leftChild.key;
-                 deleteFix(rbNode.leftChild);
-             } else{
-                 rbNode.key = rbNode.rightChild.key;
-                 deleteFix(rbNode.rightChild);
-             }
+            String s = null;
+            if (rbNode == rbNode.parent.leftChild) {
+                s = "0";
+            } else {
+                s = "1";
+            }
+            if (s.equals("0")) { //待删节点在左边
+                RBNode<AnyType> brother = rbNode.parent.rightChild;
+                if (brother.getColor().equals(RED)) {
+                    rbNode.parent.setColor(RED);
+                    brother.setColor(BLACK);
+                    leftRotation(rbNode.parent);
+                    deleteFix(rbNode, Key);
+                } else { //兄弟为黑色
+                    //兄弟的两个孩子为空或者都是黑色
+                    if ((brother.leftChild == null && brother.rightChild == null) || (brother.leftChild != null && brother.rightChild != null
+                            && brother.leftChild.getColor().equals(BLACK
+                    ) && brother.rightChild.getColor().equals(BLACK))) {
+                        brother.setColor(RED);
+                        if (brother.parent.getColor().equals(RED)) {
+                            brother.parent.setColor(BLACK);
+                            brother.setColor(RED);
+                            rbNode.parent.leftChild = null;
+                            // return rbNode;
+                        } else {
+                            rbNode.parent.leftChild = null;
+                            brother.setColor(RED);
+                            deleteFix(brother.parent, Key);
+                        }
+                    } else if (brother.rightChild != null && brother.rightChild.getColor().equals(RED)) {
+                        String color = brother.parent.getColor();
+                        brother.parent.setColor(BLACK);
+                        brother.setColor(color);
+                        leftRotation(brother.parent);
+                        brother.rightChild.setColor(BLACK);
+                        rbNode.parent.leftChild = null;
+
+                        // return rbNode;
+                    } else if (brother.leftChild != null && brother.leftChild.getColor().equals(RED)) {
+                        String color = brother.leftChild.getColor();
+                        brother.leftChild.setColor(brother.getColor());
+                        brother.setColor(color);
+                        rightRotation(brother);
+                        deleteFix(rbNode, Key);
+                    }
+                }
+            } else { //待删结点在右边
+                RBNode<AnyType> brother = rbNode.parent.leftChild;
+                //兄弟为红色
+                if (brother.getColor().equals(RED)) {
+                    rbNode.parent.setColor(RED);
+                    brother.setColor(BLACK);
+                    rightRotation(rbNode.parent);
+                    deleteFix(rbNode, Key);
+                } else { //兄弟为黑色
+
+                    if ((brother.leftChild == null && brother.rightChild == null) || (brother.leftChild != null && brother.rightChild != null
+                            && brother.leftChild.getColor().equals(BLACK
+                    ) && brother.rightChild.getColor().equals(BLACK))) {
+                        //兄弟为黑色，母亲为红色
+                        if (rbNode.parent.getColor().equals(RED)) {
+                            rbNode.parent.setColor(BLACK);
+                            brother.setColor(RED);
+                            // return rbNode;
+                            rbNode.parent.rightChild = null;
+                        } else {
+
+                            rbNode.parent.rightChild = null;
+
+                            brother.setColor(RED);
+                            deleteFix(brother.parent, Key);
+                        }
+                    } else if (brother.leftChild != null && brother.leftChild.getColor().equals(RED)) {
+                        String color = brother.parent.getColor();
+                        brother.parent.setColor(BLACK);
+                        brother.setColor(color);
+                        rightRotation(brother.parent);
+                        brother.leftChild.setColor(BLACK);
+
+                        rbNode.parent.rightChild = null;
+                    } else if (brother.rightChild != null && brother.rightChild.getColor().equals(RED)) {
+                        String color = brother.rightChild.getColor();
+                        brother.rightChild.setColor(brother.getColor());
+                        brother.setColor(color);
+                        leftRotation(brother);
+                        deleteFix(rbNode, Key);
+                    }
+                }
+            }
         }
-    }
+
+            // return rbNode;
+
 
     /**
      * 找最小结点
