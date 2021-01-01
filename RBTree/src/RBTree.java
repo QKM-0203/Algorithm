@@ -165,50 +165,49 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
      * 删除操作
      * @param key
      */
-    public void delete(AnyType key) {
-        RBNode<AnyType> root = this.root;
-        while (root != null) {
-            int cmp = key.compareTo(root.key);
+    public void delete(RBNode<AnyType> root,AnyType key) {
+        RBNode<AnyType> root1 = root;
+        while (root1 != null) {
+            int cmp = key.compareTo(root1.key);
             if (cmp > 0) {
-                root = root.rightChild;
+                root1 = root1.rightChild;
 
             } else if (cmp < 0) {
-                root = root.leftChild;
+                root1 = root1.leftChild;
 
             } else {
-                if (root.leftChild == null && root.rightChild == null) {
+                if (root1.leftChild == null && root1.rightChild == null) {
                     //叶子为红
-                    if (root.getColor().equals(RED)) {
-                        if (root.parent != null) {//可能删除
-                            if (root.parent.leftChild == root) {
-                                root.parent.leftChild = null;
+                    if (root1.getColor().equals(RED)) {
+                        if (root1.parent != null) {//可能删除
+                            if (root1.parent.leftChild == root1) {
+                                root1.parent.leftChild = null;
                             } else {
-                                root.parent.rightChild = null;
+                                root1.parent.rightChild = null;
                             }
 
                         } else {
                             this.root = null;
                         }
                     } else {
-                        deleteFix(root, root.key);
-
+                        deleteFix(root1,root1.key);
                     }
-                } else if (root.leftChild != null && root.rightChild != null) { //待删除双儿子
-                    RBNode<AnyType> replaceNode = this.findMin(root.rightChild);
-                    root.key = replaceNode.key;
-                    deleteFix(replaceNode,replaceNode.key);
+                } else if (root1.leftChild != null && root1.rightChild != null) { //待删除双儿子
+                    RBNode<AnyType> replaceNode = this.findMin(root1.rightChild);
+                    root1.key = replaceNode.key;
+                    delete(root1.rightChild,root1.key);
                 } else {
-                    if (root.leftChild != null) {
-                        root.key = root.leftChild.key;
-                        delete((AnyType) root.leftChild);
+                    if(root1.leftChild != null) {
+                        root1.key = root1.leftChild.key;
+                        delete(root1.leftChild,root1.key);
                     } else {
-                        root.key = root.rightChild.key;
-                        delete((AnyType) root.rightChild);
+                        root1.key = root1.rightChild.key;
+                        delete(root1.rightChild,root1.key);
                     }
                 }
                 return ;
             }
-            if (root == null) {
+            if (root1 == null) {
                 System.out.println("没有该节点,删除失败");
                 break;
             }
@@ -243,10 +242,15 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
                         if (brother.parent.getColor().equals(RED)) {
                             brother.parent.setColor(BLACK);
                             brother.setColor(RED);
-                            rbNode.parent.leftChild = null;
+                            if(rbNode.key == Key){
+                                rbNode.parent.leftChild = null;
+                            }
+
                             // return rbNode;
                         } else {
-                            rbNode.parent.leftChild = null;
+                            if(rbNode.key == Key) {
+                                rbNode.parent.leftChild = null;
+                            }
                             brother.setColor(RED);
                             deleteFix(brother.parent, Key);
                         }
@@ -256,7 +260,9 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
                         brother.setColor(color);
                         leftRotation(brother.parent);
                         brother.rightChild.setColor(BLACK);
-                        rbNode.parent.leftChild = null;
+                        if(rbNode.key == Key) {
+                            rbNode.parent.leftChild = null;
+                        }
 
                         // return rbNode;
                     } else if (brother.leftChild != null && brother.leftChild.getColor().equals(RED)) {
@@ -285,11 +291,13 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
                             rbNode.parent.setColor(BLACK);
                             brother.setColor(RED);
                             // return rbNode;
-                            rbNode.parent.rightChild = null;
+                            if(rbNode.key == Key) {
+                                rbNode.parent.rightChild = null;
+                            }
                         } else {
-
-                            rbNode.parent.rightChild = null;
-
+                            if(rbNode.key == Key) {
+                                rbNode.parent.rightChild = null;
+                            }
                             brother.setColor(RED);
                             deleteFix(brother.parent, Key);
                         }
@@ -365,25 +373,25 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
         integerRBTree.insert(17);
         integerRBTree.Middle(integerRBTree.root);
         System.out.println();
-        integerRBTree.delete(12);
-        integerRBTree.delete(1);
-        integerRBTree.delete(9);
-        integerRBTree.delete(2);
-        integerRBTree.delete(0);
-        integerRBTree.delete(11);
-        integerRBTree.delete(7);
-        integerRBTree.delete(19);
-        integerRBTree.delete(4);
-        integerRBTree.delete(15);
-        integerRBTree.delete(18);
-        integerRBTree.delete(5);
-        integerRBTree.delete(14);
-        integerRBTree.delete(13);
-        //integerRBTree.delete(10);
-        //integerRBTree.delete(16);
-        //integerRBTree.delete(6);
-        //integerRBTree.delete(3);
-        //integerRBTree.delete(8);
+        integerRBTree.delete(integerRBTree.root, 12);
+        integerRBTree.delete(integerRBTree.root,1);
+        integerRBTree.delete(integerRBTree.root,9);
+        integerRBTree.delete(integerRBTree.root,2);
+        integerRBTree.delete(integerRBTree.root,0);
+        integerRBTree.delete(integerRBTree.root,11);
+        integerRBTree.delete(integerRBTree.root,7);
+        integerRBTree.delete(integerRBTree.root,19);
+        integerRBTree.delete(integerRBTree.root,4);
+        integerRBTree.delete(integerRBTree.root,15);
+        integerRBTree.delete(integerRBTree.root,18);
+        integerRBTree.delete(integerRBTree.root,5);
+        integerRBTree.delete(integerRBTree.root,14);
+        integerRBTree.delete(integerRBTree.root,13);
+        integerRBTree.delete(integerRBTree.root,10);
+        integerRBTree.delete(integerRBTree.root,16);
+        integerRBTree.delete(integerRBTree.root,6);
+        integerRBTree.delete(integerRBTree.root,3);
+        integerRBTree.delete(integerRBTree.root,8);
         integerRBTree.Middle(integerRBTree.root);
     }
 }
