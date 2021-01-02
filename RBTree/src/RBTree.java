@@ -214,7 +214,11 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
         }
     }
 
-
+    /**
+     * 平衡修复
+     * @param rbNode
+     * @param Key
+     */
         public void deleteFix (RBNode < AnyType > rbNode, AnyType Key){
             if (rbNode.parent == null) {
                 rbNode.setColor(BLACK);
@@ -228,6 +232,7 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
             }
             if (s.equals("0")) { //待删节点在左边
                 RBNode<AnyType> brother = rbNode.parent.rightChild;
+                   //兄弟为红色
                 if (brother.getColor().equals(RED)) {
                     rbNode.parent.setColor(RED);
                     brother.setColor(BLACK);
@@ -239,21 +244,23 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
                             && brother.leftChild.getColor().equals(BLACK
                     ) && brother.rightChild.getColor().equals(BLACK))) {
                         brother.setColor(RED);
+                        //兄弟的两个孩子为空或者都是黑色，父亲为红色
                         if (brother.parent.getColor().equals(RED)) {
                             brother.parent.setColor(BLACK);
                             brother.setColor(RED);
+                            //针对向上调整不再删除的情况，下面的同这一条
                             if(rbNode.key == Key){
                                 rbNode.parent.leftChild = null;
                             }
 
-                            // return rbNode;
-                        } else {
+                        } else { //兄弟的两个孩子为空或者都是黑色，父亲为黑色
                             if(rbNode.key == Key) {
                                 rbNode.parent.leftChild = null;
                             }
                             brother.setColor(RED);
                             deleteFix(brother.parent, Key);
                         }
+                        //远侄子为红色
                     } else if (brother.rightChild != null && brother.rightChild.getColor().equals(RED)) {
                         String color = brother.parent.getColor();
                         brother.parent.setColor(BLACK);
@@ -263,8 +270,7 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
                         if(rbNode.key == Key) {
                             rbNode.parent.leftChild = null;
                         }
-
-                        // return rbNode;
+                        //近侄子为红色
                     } else if (brother.leftChild != null && brother.leftChild.getColor().equals(RED)) {
                         String color = brother.leftChild.getColor();
                         brother.leftChild.setColor(brother.getColor());
@@ -282,33 +288,34 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
                     rightRotation(rbNode.parent);
                     deleteFix(rbNode, Key);
                 } else { //兄弟为黑色
-
+                       //兄弟为黑色，两个侄子都是黑或者都是空
                     if ((brother.leftChild == null && brother.rightChild == null) || (brother.leftChild != null && brother.rightChild != null
                             && brother.leftChild.getColor().equals(BLACK
                     ) && brother.rightChild.getColor().equals(BLACK))) {
-                        //兄弟为黑色，母亲为红色
+                        //兄弟为黑色，两个侄子都是黑或者都是空，母亲为红色
                         if (rbNode.parent.getColor().equals(RED)) {
                             rbNode.parent.setColor(BLACK);
                             brother.setColor(RED);
-                            // return rbNode;
+
                             if(rbNode.key == Key) {
                                 rbNode.parent.rightChild = null;
                             }
-                        } else {
+                        } else { //兄弟为黑色，两个侄子都是黑或者都是空，母亲为黑色
                             if(rbNode.key == Key) {
                                 rbNode.parent.rightChild = null;
                             }
                             brother.setColor(RED);
                             deleteFix(brother.parent, Key);
                         }
+                        //远侄子为红色
                     } else if (brother.leftChild != null && brother.leftChild.getColor().equals(RED)) {
                         String color = brother.parent.getColor();
                         brother.parent.setColor(BLACK);
                         brother.setColor(color);
                         rightRotation(brother.parent);
                         brother.leftChild.setColor(BLACK);
-
                         rbNode.parent.rightChild = null;
+                        //近侄子为红色
                     } else if (brother.rightChild != null && brother.rightChild.getColor().equals(RED)) {
                         String color = brother.rightChild.getColor();
                         brother.rightChild.setColor(brother.getColor());
@@ -320,7 +327,6 @@ public class RBTree<AnyType  extends Comparable<? super AnyType>>{
             }
         }
 
-            // return rbNode;
 
 
     /**
