@@ -1,5 +1,4 @@
 import java.util.Arrays;
-
 public class Kmp {
     public static String str1 = "abcadabcab";
     public static String str2 = "abcab";
